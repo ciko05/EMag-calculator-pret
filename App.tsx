@@ -9,7 +9,7 @@ const App: React.FC = () => {
     euroPrice: '',
     leiPrice: '',
     sellingPriceIncVat: '', // User now inputs price with VAT
-    commissionPercent: 20,
+    commissionPercent: 18,
   });
 
   // Handle Euro Change (updates Lei)
@@ -57,13 +57,13 @@ const App: React.FC = () => {
     const priceIncVat = typeof sellingPriceIncVat === 'number' ? sellingPriceIncVat : 0;
     const priceExVat = priceIncVat / (1 + CONSTANTS.VAT_RATE);
 
-    // 1. Transport Logic (Based on Ex VAT price)
-    // < 62 Lei -> 3 Lei, >= 62 Lei -> 8 Lei (ex VAT)
+    // 1. Transport Logic (Based on Selling Price Inc VAT per image)
     let transport = 0;
-    if (priceExVat > 0) {
-      transport = priceExVat < CONSTANTS.TRANSPORT_THRESHOLD 
-        ? CONSTANTS.TRANSPORT_LOW 
-        : CONSTANTS.TRANSPORT_HIGH;
+    if (priceIncVat > 0) {
+      if (priceIncVat < 40) transport = 3;
+      else if (priceIncVat < 50) transport = 4;
+      else if (priceIncVat < 75) transport = 5;
+      else transport = 8;
     }
 
     // 2. Commission Logic
@@ -182,7 +182,11 @@ const App: React.FC = () => {
                         onChange={() => {}} // Read only
                         suffix="RON"
                         placeholder="0.00"
-                        helperText={results.sellingPriceExVat ? (results.sellingPriceExVat < 62 ? "< 62 Lei (fără TVA)" : "≥ 62 Lei (fără TVA)") : "Depinde de preț"}
+                        helperText={results.sellingPriceIncVat ? (
+                          results.sellingPriceIncVat < 40 ? "< 40 Lei (cu TVA)" : 
+                          results.sellingPriceIncVat < 50 ? "40 - 49.99 Lei (cu TVA)" :
+                          results.sellingPriceIncVat < 75 ? "50 - 74.99 Lei (cu TVA)" : "≥ 75 Lei (cu TVA)"
+                        ) : "Depinde de preț"}
                       />
                     </div>
                 </div>
@@ -191,10 +195,12 @@ const App: React.FC = () => {
             
             {/* Quick Summary of Inputs if needed or instructions */}
             <div className="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 border border-blue-100">
-              <p className="font-semibold mb-1">Notă logică transport:</p>
+              <p className="font-semibold mb-1">Notă logică transport (Genius):</p>
               <ul className="list-disc list-inside space-y-1 opacity-90">
-                <li>Vânzare {'<'} 62 Lei (net) = <strong>3 Lei</strong> transport</li>
-                <li>Vânzare ≥ 62 Lei (net) = <strong>8 Lei</strong> transport</li>
+                <li>0 - 39.99 Lei (cu TVA) = <strong>3 Lei</strong> (fără TVA)</li>
+                <li>40 - 49.99 Lei (cu TVA) = <strong>4 Lei</strong> (fără TVA)</li>
+                <li>50 - 74.99 Lei (cu TVA) = <strong>5 Lei</strong> (fără TVA)</li>
+                <li>≥ 75 Lei (cu TVA) = <strong>8 Lei</strong> (fără TVA)</li>
               </ul>
             </div>
           </div>

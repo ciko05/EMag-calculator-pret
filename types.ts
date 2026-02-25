@@ -20,7 +20,4 @@ export interface CalculatedResults {
 export const CONSTANTS = {
   EURO_RATE: 5.1,
   VAT_RATE: 0.21, // 21%
-  TRANSPORT_THRESHOLD: 62, // Lei ex VAT
-  TRANSPORT_LOW: 3, // Lei ex VAT
-  TRANSPORT_HIGH: 8, // Lei ex VAT
 };
