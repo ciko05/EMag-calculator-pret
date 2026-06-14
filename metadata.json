@@ -1,0 +1,5 @@
+{
+  "name": "eMAG Profit Calculator",
+  "description": "A smart profit calculator for eMAG sellers featuring automatic transport cost logic, currency conversion, and real-time margin analysis.",
+  "requestFramePermissions": []
+}
